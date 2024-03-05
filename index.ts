@@ -14,6 +14,7 @@ const client = createWalletClient({
   transport: http(),
 });
 
+// encode the plugin data
 const multisigPlugin = MultisigPlugin.initialize({
   client,
   params: {
@@ -27,6 +28,7 @@ const multisigPlugin = MultisigPlugin.initialize({
 
 const name = `goerli-test-${Date.now()}`;
 
+// static call to create a DAO
 const dao = await Dao.create({
   client,
   params: {
@@ -39,12 +41,20 @@ const dao = await Dao.create({
     plugins: [multisigPlugin],
   },
 });
-
+// use the full contract to access native viem functions
 await dao.contract.read.daoURI();
+// custom functions
 dao.prepareInstallation();
 dao.prepareUpdate();
 dao.prepareUninstallation();
+// access the address of the contract
 console.log(dao.address);
+
+
+
+// alternative to the above by putting all the functions 
+// that write to the contract under the write property
+
 // dao.write.prepareInstallation()
 // dao.write.prepareUpdate()
 // dao.write.prepareUninstallation()
